@@ -54,6 +54,21 @@ df["Diff"] = df[group_a] - df[group_b]
 # --- 정렬 (group_a가 높은 순) ---
 df_sorted = df.sort_values(by="Diff", ascending=False).reset_index(drop=True)
 
+# --- 우리나라(South Korea) 찾기 ---
+korea_row = df_sorted[df_sorted["Country"].str.lower() == "south korea"]
+
+if not korea_row.empty:
+    korea_index = korea_row.index[0] + 1  # 순위는 1부터 시작
+    korea_a = float(korea_row[group_a])
+    korea_b = float(korea_row[group_b])
+    st.markdown(f"""
+    ### 🇰🇷 한국의 {selected_option} 분포
+    우리나라는 **{group_a} {korea_a*100:.2f}%**, **{group_b} {korea_b*100:.2f}%**로  
+    **{group_a} 성향이 높은 국가 중 {korea_index}위**에 해당해요.
+    """)
+else:
+    st.warning("⚠️ 데이터에 'South Korea' 항목이 없습니다. CSV 파일의 국가명을 확인해 주세요.")
+
 # --- 표 출력 ---
 st.subheader(f"📋 {selected_option} 분포 표")
 st.markdown(f"**{group_a} 성향이 강한 국가 → {group_b} 성향이 강한 국가 순**으로 정렬되었습니다.")
